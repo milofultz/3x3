@@ -17,19 +17,19 @@
     //        8   16  32
     //        64  128 256
 
-    // A =  #   === 0   2   0    === 2+8+32+64+256 === 362
-    //     # #      8   0   32
+    // A =  #   === 0   2   0    === 2+8+16+32+64+256 === 378
+    //     ###      8   16  32
     //     # #      64  0   256
 
     const font = {
-      alphabet:    [378, 505, 203, 235, 479, 95, 491, 377, 471, 484, 349, 457, 383, 
+      alphabet:    [378, 505, 463, 235, 479, 95, 491, 381, 471, 484, 349, 457, 383, 
                     367, 495, 127, 239, 379, 214, 151, 493, 173, 509, 341, 149, 403],
-      digits:      [495, 146, 403, 503, 187, 214, 217, 147, 219, 155],
-      punctuation: [82, 5, 2, 138, 162, 186, 186, 56, 128, 84, 203, 273, 422, 42, 448, 17],
+      digits:      [495, 467, 403, 503, 187, 214, 505, 295, 511, 319],
+      punctuation: [166, 82, 5, 2, 138, 162, 186, 186, 56, 455, 128, 80, 84, 203, 273, 422, 42, 448, 17, 130, 194],
       other:       [0] // space
     };
     const fontLookup = {
-      punctuation: ['!', '"', "'", '(', ')', '&', '+', '-', '.', '/', '[', '\\', ']', '^', '_', '`'],
+      punctuation: ['?', '!', '"', "'", '(', ')', '&', '+', '-', '=', '.', ',', '/', '[', '\\', ']', '^', '_', '`', ':', ';'],
     };
     const c = document.querySelector('canvas').getContext('2d');
     const px = 6;
@@ -56,11 +56,17 @@
 
     [
       'abcdefghijklmnopqrstuvwxyz',
-      'the quick brown fox jumped over a lazy dog',
+      '0123456789',
+      fontLookup.punctuation.join(''),
+      '',
+      'var list = [378, 505, 203, 235, ...]',
+      'a^2 + b^2 == c^2',
+      '',
+      'the quick brown fox jumped over a lazy dog!',
       'the sex life of a woodchuck is a',
-      'provocative question for most',
+      'provocative question for most...',
       'a very simple readable sentence',
-      'to be or not to be',
+      'to be, or not to be?',
       'that is the question',
       // For each sentence (value) and line (index) in the sentence
     ].forEach((s, line) => {
