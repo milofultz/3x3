@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tiny Font</title>
+</head>
+<body>
+  <canvas width=10000 height=10000></canvas>
+  <script>
+    // https://zserge.com/posts/tiny-font/
+    
+    // Each letter is a collection of bits added together to make a unique 
+    // map of bits.
+
+    // grid = 1   2   4  
+    //        8   16  32
+    //        64  128 256
+
+    // A =  #   === 0   2   0    === 2+8+32+64+256 === 362
+    //     # #      8   0   32
+    //     # #      64  0   256
+
+    const font = {
+      alphabet:    [378, 505, 203, 235, 479, 95, 491, 377, 471, 484, 349, 457, 383, 
+                    367, 495, 127, 239, 379, 214, 151, 493, 173, 509, 341, 149, 403],
+      digits:      [495, 146, 403, 503, 187, 214, 217, 147, 219, 155],
+      punctuation: [82, 5, 2, 138, 162, 186, 186, 56, 128, 84, 203, 273, 422, 42, 448, 17],
+      other:       [0] // space
+    };
+    const fontLookup = {
+      punctuation: ['!', '"', "'", '(', ')', '&', '+', '-', '.', '/', '[', '\\', ']', '^', '_', '`'],
+    };
+    const c = document.querySelector('canvas').getContext('2d');
+    const px = 6;
+
+    const getCode = (char) => {
+      let charCodeOffset = 0;
+      let fontOffset = 0;
+      // letters
+      if (char.match(/[a-zA-Z]/)) {  
+        return font.alphabet[char.toLowerCase().charCodeAt() - 97];
+      // numbers
+      } else if (char.match(/\d/)) {  
+        return font.digits[char.charCodeAt() - 48];
+      // punctuation
+      } else if (fontLookup.punctuation.includes(char)) {
+        return font.punctuation[fontLookup.punctuation.indexOf(char)];
+      // spaces or anything else
+      } else {
+        return font.other[0];
+      }
+    };
+
+    let currentLine = 0;
+
+    [
+      'abcdefghijklmnopqrstuvwxyz',
+      'the quick brown fox jumped over a lazy dog',
+      'the sex life of a woodchuck is a',
+      'provocative question for most',
+      'a very simple readable sentence',
+      'to be or not to be',
+      'that is the question',
+      // For each sentence (value) and line (index) in the sentence
+    ].forEach((s, line) => {
+      // for each letter in the sentence
+      for (let i = 0; i < s.length; i++) {
+        currentLine++;
+        // for each bit in the drawing of the character
+        const charCode = getCode(s[i]);
+        for (let b = 0; b < 9; b++) {
+          const x = b % 3;
+          const y = Math.floor(b / 3);          
+          // if the bitmap number for the letter numbered 0-25:a-z has a bit
+          //   flipped at the current drawing position
+          // then set color to black
+          // else set it to white
+          c.fillStyle = (charCode & (1 << b)) ? '#000' : '#fff';
+          // param 1: X offset the letter by it's position within the sentence
+          //            and by its bit position (0, 1, 2)
+          // param 2: Y offset the letter by it's position within the list of 
+          //            sentences and by its bit position (0, 1, 2)
+          // param 3,4: dimensions of the rect
+          c.fillRect((i * 4 + x) * px, 
+                     (line * 5 + y) * px, 
+                     px, 
+                     px);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

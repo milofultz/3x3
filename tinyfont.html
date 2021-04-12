@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tiny Font</title>
+</head>
+<body>
+  <canvas width=1000 height=1000></canvas>
+  <script>
+    // https://zserge.com/posts/tiny-font/
+    
+    // Each letter is a collection of bits added together to make a unique 
+    // map of bits.
+
+    // 54 in binary === 2+4+16+32 === 0*1 + 1*2 + ... === 0b110110
+    // 
+    //  # 
+    // #
+    // ##
+
+    const font = [54, 61, 55, 62, 51, 19, 39, 29, 42, 26, 38, 53, 56, 44, 60, 31, 47, 22, 45, 43, 52, 24, 63, 33, 27, 30];
+    const c = document.querySelector('canvas').getContext('2d');
+    const px = 6;
+    [
+      'abcdefghijklmnopqrstuvwxyz',
+      'the quick brown fox jumped over a lazy dog',
+      'the sex life of a woodchuck is a',
+      'provocative question for most',
+      'a very simple readable sentence',
+      'to be or not to be',
+      'that is the question',
+      // For each sentence (value) and line (index) in the sentence
+    ].forEach((s, line) => {
+      // for each letter in the sentence
+      for (let i = 0; i < s.length; i++) {
+        // for each bit in the drawing of the character
+        for (let b = 0; b < 6; b++) {
+          // if the bitmap number for the letter numbered 0-25:a-z has a bit
+          //   flipped at the current drawing position
+          // then set color to black
+          // else set it to white
+          c.fillStyle = (font[s.charCodeAt(i) - 97] & (1 << b)) ? '#000' : '#fff';
+          // param 1: X offset the letter by it's position within the sentence
+          //            and by it's bit position (0, 1)
+          // param 2: Y offset the letter by it's position within the list of 
+          //            sentences and by it's bit position (0, 1, 2)
+          // param 3,4: dimensions of the rect
+          c.fillRect((i * 3 + (b & 1)) * px, (line * 5 + (b >> 1)) * px, px, px);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
